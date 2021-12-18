@@ -3,7 +3,7 @@ import re
 # I GOT THE COEF NOW I NEED TO GET THE POWER
 
 
-
+#function to get the coef
 def check_syntax_error(right_subgroups_str) :
 
     i = 1
@@ -19,11 +19,13 @@ def check_syntax_error(right_subgroups_str) :
             print("error")
             return
         i += 1
-    return float(coef)     
+    return float(coef)
 
 def parse(txt) :
 
+    #split by =
     equation_pairs = txt.replace(" ", "").split("=")
+
     #error handler
     if len(equation_pairs) != 2:
         print("error")
@@ -52,21 +54,7 @@ def parse(txt) :
         if right_pair[0] != "-" and right_pair[0] != "+" :
             right_pair = "+" + right_pair
 
-    # line = "-15*x^0-6*X^1+0*X^2-5.6*X^1"
-    # d = "-"
-    # s1 =  [d+e for e in line.split(d) if e]
-    # print(s1)
-
-    # for i in range(len(s1)) :
-    #     for j in range(len(s1[i])) :
-    #         if s1[i][j] == "+" :
-    #             plus_found = 1
-    #         else :
-    #             plus_found = 0
-    #     if plus_found == 1 :
-    #         print("found")
-
-
+    #split by - and + then get the coef
     i = 1
     right_subGroups_lst = []
     right_subGroups = right_pair[0]
@@ -84,27 +72,6 @@ def parse(txt) :
         coef_lst.append(check_syntax_error(right_subGroups_lst[i]))
         i += 1
     print(coef_lst)
-
-
-    
-    
-    # right_subGroups =  right_pair.split("- | +")
-    # print("right_subGroup : ", right_subGroups,"\n")
-    
-    # left_subGroups =  re.split(r'([\+\-])', left_pair)
-    # print("left_subGroup : ", left_subGroups,"\n")
-
-    # coef_lst = []
-    # pow_lst = []
-    # i = 0
-    # while i < len(right_subGroups) :
-    #     j = 0
-    #     while j < len(right_subGroups[i]) :
-    #         if (right_subGroups[i][j] == "^") :
-    #             coef_lst += right_subGroups[i].split("*")
-    #             pow_lst += right_subGroups[i][j + 1]
-    #         j += 1
-    #     i += 1
 
 
 txt = "-15 * x^0  - 6 * X^1 + 0 * X^2 - 5.6 * X^1 = 9 * X^0"
