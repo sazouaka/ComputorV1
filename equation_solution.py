@@ -47,9 +47,3 @@ def solution(a, b, c) :
         print("seconde solution: ")
         print(x2 , "\n")
         return
-
-a = float(sys.argv[1])
-b = float(sys.argv[2])
-c = float(sys.argv[3])
-
-solution(a, b, c)
