@@ -13,12 +13,12 @@ def check_coef_error(subgroups) : # a * x^p
             if (subgroups[i] == '.') :
                 is_float = True
         else :
-            print("error0")
+            print('\u001b[31m' + "ERROR : You must enter a number for coefficient")
             exit()
         i += 1
     if (i + 3 >= len(subgroups) or subgroups[i] != '*' or (subgroups[i + 1] != 'X'
     and subgroups[i + 1] != 'x') or subgroups[i + 2] != '^'):
-        print("error1")
+        print('\u001b[31m' + "ERRO : Incorrect format. You must respect the form 'd * x^n'")
         exit()
     return float(coef)
 
@@ -35,7 +35,7 @@ def check_pow_error(subgroups) :
     else:
         i +=1
     if (i >= len(subgroups)):
-        print("error2")
+        print('\u001b[31m' + "ERRO : Incorrect format. You must respect the form 'd * x^n'")
         exit()
     while i < len(subgroups) :
         if subgroups[i].isdigit() or (subgroups[i] == '.' and is_float == False) :
@@ -43,7 +43,7 @@ def check_pow_error(subgroups) :
             if (subgroups[i] == '.') :
                 is_float = True
         else :
-            print("error3")
+            print('\u001b[31m' + "ERROR : You must enter a number for power")
             exit()
         i += 1
     return float(pow)
@@ -54,14 +54,14 @@ def error_handler(pair) :
     while i + 1  < len(pair) :
         if ((pair[i] == "-" or pair[i] == "+" or pair[i] == "*" or (pair[i] == "^" and pair[i + 1] == "*")) and
         (pair[i + 1] == "-" or pair[i + 1] == "+" or pair[i + 1] == "*" or pair[i + 1] == "^")) :
-            print("error5")
+            print('\u001b[31m' + "ERROR : Syntax error. Double sign")
             exit()
         i += 1
 
 #add + in at start
 def add_sign(pair) :
     for i in range(len(pair)) :
-        if pair[0] != "-" and pair[0] != "+" :
+        if pair[0] != "-" and pair[0] != "+" and pair[1].isdigit() :
             pair = "+" + pair
     return(pair)
 
@@ -129,6 +129,7 @@ def sort_func(elem): #(coef,power)
     return elem[1] #returns the subelement in position 1 which is power
 
 def merge_lists(coef, power):
+
     if len(coef) != len(power):
         print("Unknowen Error. merg lists")
         exit()
@@ -146,13 +147,13 @@ def merge_lists(coef, power):
    
 def print_polynomial_degree(list):
 
-    if list[0][0] != 0: print("Polynomial degree: 2")
-    elif list[1][0] != 0: print("Polynomial degree: 1")
+    if list[0][0] != 0: print(' \u001b[35m' + "\nPolynomial degree: 2")
+    elif list[1][0] != 0: print(' \u001b[35m' + "\nPolynomial degree: 1")
     elif list[2][0] == 0:
-        print("Each real number is a solution")
+        print(' \u001b[36m' + "Each real number is a solution")
         exit()
     else:
-        print("Equation has no solution")
+        print(' \u001b[35m' + "Equation has no solution")
         exit()
     return list[0][0],list[1][0],list[2][0]
 
@@ -161,8 +162,8 @@ def reduced_form(a,b,c) :
     if a != 0: str_a = str(a) + "X^2"
     if b != 0: str_b = str(b) + "X"
     if c != 0: str_c = str(c)
-    print("Redueced form:",str_a,str_b,str_c)
-  #  print("************* valid list *************" , valid_list)
+    print(' \u001b[34m')
+    print("\nRedueced form:",str_a,str_b,str_c)
 
 def parse(txt) :
 
@@ -171,7 +172,7 @@ def parse(txt) :
 
     #error handler if there is more than one =
     if len(equation_pairs) != 2 or equation_pairs[0] == "" or equation_pairs[1] == "" :
-        print("error4")
+        print('\u001b[31m' + "ERROR : Invalid equation")
         exit()
 
     #get right and left of =
@@ -187,7 +188,7 @@ def parse(txt) :
     left_pair = add_sign(left_pair)
 
     #get coefficient list and power list
-    print(coef_power(right_pair, left_pair))
+    coef_power(right_pair, left_pair)
 
     coef , power = coef_power(right_pair, left_pair)
     list_power_coef = merge_lists(coef, power)
@@ -195,7 +196,8 @@ def parse(txt) :
     for element in list_power_coef[:] :
         if (element[1] > 2 or element[1] < 0):
             if (element[0] != 0) :
-                print("Polynomial degree: ", element[1])
+                print(' \u001b[35m')
+                print("\nPolynomial degree: ", element[1])
                 print("The polynomial degree is strictly greater than 2, I can't solve.")
                 exit()
             else :
@@ -204,16 +206,16 @@ def parse(txt) :
     a,b,c = print_polynomial_degree(list_power_coef)
     reduced_form(a,b,c)
     equation_solution.solution(a,b,c)
-    print(list_power_coef)
 
 
-#txt = "2*x^-5.5 = 5*x^1 + 2*X^22"
-# txt = "2*x^-5.5 = 5*x^1 + 2*X^22"
+
 if (len(sys.argv) != 2):
-    print('ERROR: python3 computorv1 "2*x^1 + 3 * X^0 = 5*x^1 + 2*X^2"')
-parse(sys.argv[1])
-# try:
-# except:
-    # print("ERROR: plz enter a valid equation(a * x^p)")
+    print('\u001b[33m' + 'ERROR: You must enter 3 arguments')
+    exit()
+
+try:
+    parse(sys.argv[1])  
+except:
+    print('\u001b[33m' + "ERROR: Plz enter a valid equation(a * x^p)")
 
 # a ∗ x^p
