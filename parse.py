@@ -1,6 +1,8 @@
 import sys
 import equation_solution
 
+#9ADI REDUCED FOOORM
+
 #function to check coef error get the coef
 def check_coef_error(subgroups) : # a * x^p
 
