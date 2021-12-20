@@ -1,7 +1,53 @@
 import sys
-import equation_solution
 
-#9ADI REDUCED FOOORM
+#solution
+def sqrt(x):
+    return x**0.5
+
+def solution(a, b, c) :
+    if a == 0 and b == 0 :
+        if c == 0 :
+            print(' \u001b[36m' + "\nEach real number is a solution\n" + '\x1b[0m')
+            return
+        else :
+            print(' \u001b[35m' + "\nEquation has no solution\n" + '\x1b[0m')
+            return
+    elif a == 0 and b != 0 :
+        print('\u001b[32m')
+        print("\nThe solution is:\n" + '\x1b[0m')
+        print((-c) / (b), "\n")
+        return
+    else :
+        delta = b ** 2 - 4 * a * c
+
+    if delta < 0 :
+        x1 = ((-b) / (2 * a))
+        y1 = (sqrt(-delta) / (2 * a))
+        print(' \u001b[36m' + "\nDiscriminant is strictly negative, there is two complexe solutions:\n")
+        if x1 == 0 :
+            print('\u001b[32m')
+            print("+",y1,"* i", "\n")
+            print("-",y1,"* i", "\n" + '\x1b[0m')
+            return
+        else :
+            print('\u001b[32m')
+            print(x1, "+", y1,"* i", "\n")
+            print(x1, "-", y1,"* i", "\n" + '\x1b[0m')
+            return
+
+    elif delta == 0 :
+        x = (-b) / (2 * a)
+        print(' \u001b[36m' + "\nDiscriminant is equal to zero, there is one solution: ",  x, '\x1b[0m')
+        return
+
+    else :
+        x1 = ((-b) - sqrt(delta)) / (2 * a)
+        x2 = ((-b) + sqrt(delta)) / (2 * a)
+        print(' \u001b[36m' + "\nDiscriminant is strictly positive, there are two solutions:\n")
+        print('\u001b[32m')
+        print("first solution: ", x1 , "\n")
+        print("seconde solution: ",x2 , "\n" + '\x1b[0m')
+        return
 
 #function to check coef error get the coef
 def check_coef_error(subgroups) : # a * x^p
@@ -50,21 +96,40 @@ def check_pow_error(subgroups) :
         i += 1
     return float(pow)
 
+def double_operator(op1, op2):
+    if op1 == '*' and (op2 != 'X' and op2 != 'x'):
+        print('\u001b[31m' + "Error: expected an 'X' after '*'")
+        exit()
+    if (op1 == '-' or op1 == '+') and op2.isdigit() == False :
+        print('\u001b[31m' + "Error: expected a 'number' after", "'" + op1 + "'")
+        exit()
+    if (op1 == 'x' or op1 == 'X') and op2 != '^':
+        print('\u001b[31m' + "Error: expected a '^'", op1)
+        exit()
+    if (op1 == '^') and (op2 != '-' and op2 != '+' and op2.isdigit() == False):
+        print('\u001b[31m' + "Error: expected a number after", op1)
+        exit()
+    return False
+
 #handle some errors in right and left pairs
 def error_handler(pair) :
     i = 0
     while i + 1  < len(pair) :
-        if ((pair[i] == "-" or pair[i] == "+" or pair[i] == "*" or (pair[i] == "^" and pair[i + 1] == "*")) and
-        (pair[i + 1] == "-" or pair[i + 1] == "+" or pair[i + 1] == "*" or pair[i + 1] == "^")) :
+        #if ((pair[i] == "-" or pair[i] == "+" or pair[i] == "*" or (pair[i] == "^" and pair[i + 1] == "*")) and
+        #(pair[i + 1] == "-" or pair[i + 1] == "+" or pair[i + 1] == "*" or pair[i + 1] == "^")) :
+        if (double_operator(pair[i], pair[i + 1])):
             print('\u001b[31m' + "ERROR : Syntax error. Double sign")
             exit()
         i += 1
 
 #add + in at start
 def add_sign(pair) :
-    for i in range(len(pair)) :
-        if pair[0] != "-" and pair[0] != "+" and pair[1].isdigit() :
-            pair = "+" + pair
+    if pair[0] != "-" and pair[0] != "+":
+        if pair[0].isdigit() :
+            return "+" + pair
+        else:
+            print('\u001b[31m' + "Error: wrong format (a * x^p)")
+            exit()
     return(pair)
 
 #spliting left and right pairs by + - ^
@@ -97,8 +162,6 @@ def get_coef(pair) :
 
 #split by - and + then get the power
 def get_pow(pair) :
-
-    subGroups_lst = []
     subGroups_lst = sign_split(pair)
     i = 0
     pow_lst = []
@@ -109,7 +172,6 @@ def get_pow(pair) :
 
 def coef_power(right_pair, left_pair) :
 
-    left_coef_lst = []
     left_coef_lst = get_coef(left_pair)
 
     #move left pair to right changing the sign of coefficient
@@ -146,7 +208,7 @@ def merge_lists(coef, power):
     merged_list.sort(key=sort_func, reverse=True) #sort passes element by element to sort_func
                                                   #that returns second position of the element which is power
     return merged_list
-   
+
 def print_polynomial_degree(list):
 
     if list[0][0] != 0: print(' \u001b[35m' + "\nPolynomial degree: 2")
@@ -161,11 +223,18 @@ def print_polynomial_degree(list):
 
 def reduced_form(a,b,c) :
     str_a = str_b = str_c = ""
-    if a != 0: str_a = str(a) + "X^2"
-    if b != 0: str_b = str(b) + "X"
+    if a != 0 and a != 1 and a != -1: str_a = str(a) + "X²"
+    elif a == 1: str_a = "X²"
+    elif a == -1: str_a = "-X²"
+    if b != 0 and b != 1 and b != -1: str_b = str(b) + "X"
+    elif b == 1: str_b = "X"
+    elif b == -1: str_b = "-X"
     if c != 0: str_c = str(c)
-    print(' \u001b[34m')
-    print("\nRedueced form:",str_a,str_b,str_c)
+    if str_a != "" and b > 0: str_b = "+ " + str_b
+    if (str_b != "" or str_a != "") and c > 0: str_c = "+ " + str_c
+
+    r_format = str_a + " " + str_b + " " + str_c + " = 0"
+    print("\u001b[34m\nRedueced form:", r_format, "\x1b[0m")
 
 def parse(txt) :
 
@@ -173,7 +242,7 @@ def parse(txt) :
     equation_pairs = txt.replace(" ", "").split("=")
 
     #error handler if there is more than one =
-    if len(equation_pairs) != 2 or equation_pairs[0] == "" or equation_pairs[1] == "" :
+    if len(equation_pairs) != 2 or equation_pairs[0] == "" or len (equation_pairs[1]) < 5 :
         print('\u001b[31m' + "ERROR : Invalid equation")
         exit()
 
@@ -190,8 +259,6 @@ def parse(txt) :
     left_pair = add_sign(left_pair)
 
     #get coefficient list and power list
-    coef_power(right_pair, left_pair)
-
     coef , power = coef_power(right_pair, left_pair)
     list_power_coef = merge_lists(coef, power)
 
@@ -204,10 +271,10 @@ def parse(txt) :
                 exit()
             else :
                 list_power_coef.remove(element)
-    
+
     a,b,c = print_polynomial_degree(list_power_coef)
     reduced_form(a,b,c)
-    equation_solution.solution(a,b,c)
+    solution(a,b,c)
 
 
 
@@ -216,8 +283,14 @@ if (len(sys.argv) != 2):
     exit()
 
 try:
-    parse(sys.argv[1])  
+    parse(sys.argv[1])
 except:
-    print('\u001b[33m' + "ERROR: Plz enter a valid equation(a * x^p)")
+    print('\u001b[33m' + "ERROR: Plz enter a valid equation(a * x^p)\x1b[0m")
 
 # a ∗ x^p
+
+################# EERRROOOORRRSSS ############
+#
+#
+#
+#
